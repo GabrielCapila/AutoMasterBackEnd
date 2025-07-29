@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
             {
                 Email = request.Email.ToLowerInvariant(),
                 PasswordHash = _passwordService.HashPassword(request.Password),
-                FullName = request.full_name,
+                FullName = request.FullName,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
