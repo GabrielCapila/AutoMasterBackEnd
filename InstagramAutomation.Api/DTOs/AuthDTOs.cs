@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InstagramAutomation.Api.DTOs;
 
@@ -14,7 +15,8 @@ public class RegisterRequest
 
     [Required(ErrorMessage = "Nome completo é obrigatório")]
     [StringLength(255, ErrorMessage = "Nome completo deve ter no máximo 255 caracteres")]
-    public string full_name { get; set; } = string.Empty;
+    [JsonPropertyName("full_name")]
+    public string FullName { get; set; } = string.Empty;
 }
 
 public class LoginRequest
