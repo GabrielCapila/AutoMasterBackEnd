@@ -23,8 +23,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(e => e.Email).IsUnique();
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("datetime('now')");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
 
         // InstagramAccount configuration
@@ -32,8 +32,8 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasIndex(e => e.InstagramUserId).IsUnique();
             entity.HasIndex(e => e.Username);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("datetime('now')");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.User)
                 .WithMany(p => p.InstagramAccounts)
@@ -45,8 +45,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<AutomationRule>(entity =>
         {
             entity.HasIndex(e => new { e.UserId, e.Name });
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("datetime('now')");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.User)
                 .WithMany(p => p.AutomationRules)
@@ -65,7 +65,7 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => e.CommentId).IsUnique();
             entity.HasIndex(e => new { e.InstagramAccountId, e.CommentTimestamp });
             entity.HasIndex(e => e.Processed);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.InstagramAccount)
                 .WithMany(p => p.CommentEvents)
@@ -79,7 +79,7 @@ public class ApplicationDbContext : DbContext
             entity.HasIndex(e => new { e.CommentEventId, e.ActionType });
             entity.HasIndex(e => e.Status);
             entity.HasIndex(e => e.NextRetryAt);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("datetime('now')");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.HasOne(d => d.CommentEvent)
                 .WithMany(p => p.ActionExecutions)
