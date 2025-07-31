@@ -1,14 +1,14 @@
 # Instagram Automation API
 
-This project provides a minimal Web API for managing Instagram accounts and automation rules. It is written in **.NET 8** and uses **SQLite** for storage.
+This project provides a minimal Web API for managing Instagram accounts and automation rules. It is written in **.NET 8** and uses **MariaDB** for storage.
 
 ## Requirements
 - .NET 8 SDK
-- SQLite (included by default)
+- MariaDB server
 
 ## Configuration
 1. Copy `InstagramAutomation.Api/appsettings.json` to `InstagramAutomation.Api/appsettings.Development.json` and update the following values:
-   - `ConnectionStrings:DefaultConnection` – path to the SQLite database file.
+   - `ConnectionStrings:DefaultConnection` – connection string for your MariaDB database.
    - `JwtSettings:SecretKey` – secret key used to sign JWT tokens.
    - `Instagram` section – credentials from your Meta application (client id, secret and webhook verify token).
 2. Alternatively, these values can be supplied via environment variables.
@@ -17,7 +17,7 @@ This project provides a minimal Web API for managing Instagram accounts and auto
 ```
 dotnet run --project InstagramAutomation.Api/InstagramAutomation.Api.csproj
 ```
-The first run will create a SQLite database file. Swagger UI is available at `/swagger` when running in development mode.
+The first run will create the MariaDB schema if it does not already exist. Swagger UI is available at `/swagger` when running in development mode.
 
 ## Tests
 ```
