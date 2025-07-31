@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using InstagramAutomation.Api.Data;
 using InstagramAutomation.Api.Services;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 // Database
 var dbConnection = builder.Configuration.GetConnectionString("DefaultConnection")
-                  ?? "Server=localhost;Database=instagram_automation;User=root;Password=pass";
+                  ?? "Server=db;Database=instagram_automation;User=root;Password=pass";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(dbConnection, ServerVersion.AutoDetect(dbConnection)));
 
