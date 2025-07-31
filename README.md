@@ -4,7 +4,18 @@ This project provides a minimal Web API for managing Instagram accounts and auto
 
 ## Requirements
 - .NET 8 SDK
-- MariaDB server
+- MariaDB server (or Docker)
+
+### Running MariaDB with Docker
+You can start a local MariaDB instance using the provided `docker-compose.yml`:
+
+```
+docker compose up -d
+```
+
+The container exposes port `3306` and creates a database named `instagram_automation`
+with the root password `pass`. Adjust your connection string if you modify these
+values.
 
 ## Configuration
 1. Copy `InstagramAutomation.Api/appsettings.json` to `InstagramAutomation.Api/appsettings.Development.json` and update the following values:
