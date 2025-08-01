@@ -43,45 +43,68 @@ public class WebhookController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Receive([FromBody] WebhookRequest request)
+    public async Task<IActionResult> Receive([FromBody] JsonElement payload)
     {
-        if (request.Entry == null)
-            return Ok();
+        var requests = ParseRequests(payload);
 
-        foreach (var entry in request.Entry)
+        foreach (var request in requests)
         {
-            var account = await _context.InstagramAccounts
-                .FirstOrDefaultAsync(a => a.InstagramUserId == entry.Id);
-            if (account == null)
+            if (request.Entry == null)
                 continue;
 
-            foreach (var change in entry.Changes)
+            foreach (var entry in request.Entry)
             {
-                if (change.Field != "comments")
+                var account = await _context.InstagramAccounts
+                    .FirstOrDefaultAsync(a => a.InstagramUserId == entry.Id);
+                if (account == null)
                     continue;
 
-                var comment = change.Value;
-                var commentEvent = new CommentEvent
+                foreach (var change in entry.Changes)
                 {
-                    InstagramAccountId = account.Id,
-                    CommentId = comment.Id,
-                    MediaId = comment.Media.Id,
-                    CommenterId = comment.From.Id,
-                    CommenterUsername = comment.From.Username,
-                    CommentText = comment.Text,
-                    CommentTimestamp = DateTimeOffset.FromUnixTimeSeconds(entry.Time).UtcDateTime,
-                    MediaType = comment.Media.MediaType,
-                    WebhookData = JsonSerializer.Serialize(change)
-                };
+                    if (change.Field != "comments")
+                        continue;
 
-                _context.CommentEvents.Add(commentEvent);
-                await _context.SaveChangesAsync();
+                    var comment = change.Value;
+                    var commentEvent = new CommentEvent
+                    {
+                        InstagramAccountId = account.Id,
+                        CommentId = comment.Id,
+                        MediaId = comment.Media.Id,
+                        CommenterId = comment.From.Id,
+                        CommenterUsername = comment.From.Username,
+                        CommentText = comment.Text,
+                        CommentTimestamp = DateTimeOffset.FromUnixTimeSeconds(entry.Time).UtcDateTime,
+                        MediaType = comment.Media.MediaType,
+                        WebhookData = JsonSerializer.Serialize(change)
+                    };
 
-                await ProcessRules(account, commentEvent);
+                    _context.CommentEvents.Add(commentEvent);
+                    await _context.SaveChangesAsync();
+
+                    await ProcessRules(account, commentEvent);
+                }
             }
         }
 
         return Ok();
+    }
+
+    internal static List<WebhookRequest> ParseRequests(JsonElement payload)
+    {
+        var requests = new List<WebhookRequest>();
+        if (payload.ValueKind == JsonValueKind.Array)
+        {
+            var array = JsonSerializer.Deserialize<List<WebhookRequest>>(payload.GetRawText());
+            if (array != null)
+                requests.AddRange(array);
+        }
+        else if (payload.ValueKind == JsonValueKind.Object)
+        {
+            var obj = JsonSerializer.Deserialize<WebhookRequest>(payload.GetRawText());
+            if (obj != null)
+                requests.Add(obj);
+        }
+        return requests;
     }
 
     private async Task ProcessRules(InstagramAccount account, CommentEvent commentEvent)
