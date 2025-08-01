@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InstagramAutomation.Api.DTOs;
 
@@ -135,7 +136,11 @@ public class WebhookEntry
 {
     public string Id { get; set; } = string.Empty;
     public long Time { get; set; }
-    public List<WebhookChange> Changes { get; set; } = new();
+    public List<WebhookChange>? Changes { get; set; }
+
+    // Business Login payloads can provide field/value directly
+    public string? Field { get; set; }
+    public WebhookValue? Value { get; set; }
 }
 
 public class WebhookChange
@@ -161,6 +166,9 @@ public class WebhookFrom
 public class WebhookMedia
 {
     public string Id { get; set; } = string.Empty;
+
+    // field is named media_product_type in the webhook payload
+    [JsonPropertyName("media_product_type")]
     public string MediaType { get; set; } = string.Empty;
 }
 
