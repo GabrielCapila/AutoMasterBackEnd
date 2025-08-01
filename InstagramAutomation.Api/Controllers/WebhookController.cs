@@ -55,7 +55,17 @@ public class WebhookController : ControllerBase
             if (account == null)
                 continue;
 
-            foreach (var change in entry.Changes)
+            var changes = entry.Changes?.ToList() ?? new List<WebhookChange>();
+            if (!string.IsNullOrEmpty(entry.Field) && entry.Value != null)
+            {
+                changes.Add(new WebhookChange
+                {
+                    Field = entry.Field!,
+                    Value = entry.Value!
+                });
+            }
+
+            foreach (var change in changes)
             {
                 if (change.Field != "comments")
                     continue;
