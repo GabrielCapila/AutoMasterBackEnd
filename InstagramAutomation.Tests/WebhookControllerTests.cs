@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Text.Json;
+
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,7 @@ using Xunit;
 public class WebhookControllerTests
 {
     [Fact]
+
     public void ParseRequests_AcceptsSingleObject()
     {
         var json = "{" +
@@ -36,6 +39,7 @@ public class WebhookControllerTests
     }
 
     [Fact]
+
     public async Task Receive_WithBusinessLoginPayload_StoresCommentEvent()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()

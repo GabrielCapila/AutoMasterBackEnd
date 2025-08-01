@@ -52,7 +52,21 @@ public class WebhookController : ControllerBase
             if (request.Entry == null)
                 continue;
 
+
             foreach (var entry in request.Entry)
+
+            var changes = entry.Changes?.ToList() ?? new List<WebhookChange>();
+            if (!string.IsNullOrEmpty(entry.Field) && entry.Value != null)
+            {
+                changes.Add(new WebhookChange
+                {
+                    Field = entry.Field!,
+                    Value = entry.Value!
+                });
+            }
+
+            foreach (var change in changes)
+
             {
                 var account = await _context.InstagramAccounts
                     .FirstOrDefaultAsync(a => a.InstagramUserId == entry.Id);
