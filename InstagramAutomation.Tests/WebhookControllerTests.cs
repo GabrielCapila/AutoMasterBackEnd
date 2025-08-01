@@ -56,7 +56,8 @@ public class WebhookControllerTests
         context.SaveChanges();
 
         var config = new ConfigurationBuilder().Build();
-        var controller = new WebhookController(config, context, new StubInstagramApiService(), NullLogger<WebhookController>.Instance);
+        var stubService = new StubInstagramApiService();
+        var controller = new WebhookController(config, context, stubService, NullLogger<WebhookController>.Instance);
 
         var request = new WebhookRequest
         {
@@ -86,14 +87,18 @@ public class WebhookControllerTests
         Assert.Equal("john", ev.CommenterUsername);
         Assert.Equal("Nice post", ev.CommentText);
         Assert.Equal("FEED", ev.MediaType);
+        Assert.True(stubService.Replied);
+        Assert.True(stubService.SentDm);
     }
 
     private class StubInstagramApiService : IInstagramApiService
     {
         public Task<InstagramUserInfo?> GetUserInfoAsync(string accessToken) => Task.FromResult<InstagramUserInfo?>(null);
         public Task<bool> ValidateAccessTokenAsync(string accessToken) => Task.FromResult(true);
-        public Task<bool> PostCommentReplyAsync(string accessToken, string commentId, string message) => Task.FromResult(true);
-        public Task<bool> SendPrivateMessageAsync(string accessToken, string userId, string message) => Task.FromResult(true);
+        public bool Replied { get; private set; }
+        public bool SentDm { get; private set; }
+        public Task<bool> PostCommentReplyAsync(string accessToken, string commentId, string message) { Replied = true; return Task.FromResult(true); }
+        public Task<bool> SendPrivateMessageAsync(string accessToken, string userId, string message) { SentDm = true; return Task.FromResult(true); }
         public Task<List<InstagramMedia>> GetUserMediaAsync(string accessToken, int limit = 10) => Task.FromResult(new List<InstagramMedia>());
     }
 }
