@@ -136,17 +136,9 @@ public class WebhookEntry
 {
     public string Id { get; set; } = string.Empty;
     public long Time { get; set; }
-    public List<WebhookChange>? Changes { get; set; }
-
-    // Business Login payloads can provide field/value directly
+    // Business Login payloads provide field/value directly
     public string? Field { get; set; }
     public WebhookValue? Value { get; set; }
-}
-
-public class WebhookChange
-{
-    public string Field { get; set; } = string.Empty;
-    public WebhookValue Value { get; set; } = new();
 }
 
 public class WebhookValue
