@@ -19,4 +19,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo(&quot;InstagramAutomation.Tests&quot;)" />
+  </ItemGroup>
+
 </Project>
